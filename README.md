@@ -2,6 +2,8 @@
 
 Sistema de trading institucional modular com gestão de risco, engine de decisão e suporte multi-plataforma.
 
+**Metodologia**: CRT (Candle Range Theory) baseada nos ensinamentos do [canal ZForex](https://www.youtube.com/@zforeex)
+
 ## 🏗️ Arquitetura
 
 ```
@@ -39,6 +41,12 @@ Sistema de trading institucional modular com gestão de risco, engine de decisã
 ├── memory/                # Memória e tracking
 │   ├── trade_journal.py   # Diário de trades
 │   └── performance_tracker.py # Rastreamento de performance
+│
+├── strategy/              # Regras CRT (ZForex)
+│   ├── crt_institutional_rules.md # Manual institucional (11 camadas)
+│   ├── crt_strategy.md    # Estratégia detalhada
+│   ├── crt_validator.py   # Validador de regras
+│   └── README.md          # Documentação CRT
 │
 └── logs/                  # Logs do sistema
 ```
@@ -103,13 +111,52 @@ python main.py
 >> aplicar fibonacci
 ```
 
+## 📈 Metodologia CRT (ZForex)
+
+O sistema opera exclusivamente com a metodologia **CRT (Candle Range Theory)** ensinada pelo [canal ZForex](https://www.youtube.com/@zforeex).
+
+### Regras Institucionais (11 Camadas)
+
+1. **Core Engine**: Análise estrutural H4 (OBRIGATÓRIO)
+2. **Correlação**: Multi-ativo e DXY/BTC
+3. **Timing**: 5 critérios obrigatórios (H4, M15, M5, liquidez, sincronia)
+4. **Risk Manager**: Gestão profissional de risco
+5. **Multi-Layout**: H4/H1, M15, M5
+6. **Aprendizado**: Análise de vídeos do ZForex
+7. **Backtest**: Testes multi-cenário
+8. **Memória**: Evolução contínua
+9. **Multi-Conta**: Gestão simultânea
+10. **Modo Defesa**: Proteção em alta volatilidade
+11. **Disciplina**: Regras absolutas de bloqueio
+
+### Critérios de Execução
+
+**TODOS os 5 critérios devem estar atendidos:**
+
+✅ H4 alinhado (estrutura principal)  
+✅ M15 confirmou deslocamento  
+✅ M5 confirmou reteste  
+✅ Liquidez foi capturada  
+✅ Multi-ativo sincronizado  
+
+**Sem esses 5 critérios → NÃO EXECUTAR**
+
+### Regra Absoluta
+
+> ⚠️ **NUNCA** operar contra estrutura do H4
+
+Consulte `strategy/crt_institutional_rules.md` para detalhes completos.
+
+---
+
 ## 🛡️ Gestão de Risco
 
-O sistema possui **3 camadas de proteção**:
+O sistema possui **4 camadas de proteção**:
 
-1. **DecisionEngine**: Valida estrutura institucional e RR ratio
-2. **RiskEngine**: Limita drawdown e posições concorrentes
-3. **DrawdownGuard**: Proteção ativa com trailing stops e breakeven
+1. **CRTValidator**: Valida 11 camadas da metodologia ZForex
+2. **DecisionEngine**: Valida estrutura institucional e RR ratio
+3. **RiskEngine**: Limita drawdown e posições concorrentes
+4. **DrawdownGuard**: Proteção ativa com trailing stops e breakeven
 
 ### Limites padrão (config.yaml)
 - Risco por trade: 2%
