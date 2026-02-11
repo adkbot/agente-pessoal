@@ -4,37 +4,38 @@ import { useState, useEffect } from 'react'
 import { Settings, Mic, Volume2, VolumeX, Send, Circle } from 'lucide-react'
 import CredentialsModal from '@/components/CredentialsModal'
 import VoiceControls from '@/components/VoiceControls'
+import { useWebSocket } from '@/lib/useWebSocket'
 
 type ConnectionStatus = 'disconnected' | 'connecting' | 'connected'
 
 export default function Home() {
   const [command, setCommand] = useState('')
   const [permission, setPermission] = useState('trade_execution')
-  const [status, setStatus] = useState<ConnectionStatus>('disconnected')
   const [showCredentials, setShowCredentials] = useState(false)
-  const [responses, setResponses] = useState<Array<{command: string, response: string, timestamp: string}>>([])
+  const [responses, setResponses] = useState<Array<{ command: string, response: string, timestamp: string }>>([])
 
-  // WebSocket connection (to be implemented)
-  useEffect(() => {
-    // TODO: WebSocket connection logic
-    setStatus('disconnected')
-  }, [])
+  // WebSocket connection
+  const { isConnected, sendCommand: sendWsCommand } = useWebSocket()
+  const status: ConnectionStatus = isConnected ? 'connected' : 'disconnected'
+
 
   const handleSendCommand = async () => {
     if (!command.trim()) return
 
     const timestamp = new Date().toLocaleTimeString()
-    
-    // TODO: Send via WebSocket
-    console.log('Sending command:', { command, permission })
-    
-    // Mock response for now
+
+    // Send via WebSocket/HTTP relay
+    const response = await sendWsCommand(command, permission)
+
+    // Add to response history
     setResponses(prev => [{
       command,
-      response: '✅ Command received (WebSocket not connected)',
+      response: response.status === 'success'
+        ? `✅ ${response.result}`
+        : `❌ ${response.error || 'Error'}`,
       timestamp
     }, ...prev])
-    
+
     setCommand('')
   }
 
@@ -58,7 +59,7 @@ export default function Home() {
             </div>
             <StatusIndicator status={status} />
           </div>
-          
+
           <div className="flex items-center gap-4">
             <VoiceControls onVoiceCommand={handleVoiceCommand} />
             <button
@@ -75,11 +76,11 @@ export default function Home() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          
+
           {/* Command Input */}
           <div className="bg-black/40 backdrop-blur-sm rounded-xl border border-purple-500/30 p-6 shadow-2xl">
             <h2 className="text-lg font-semibold mb-4 text-purple-300">Remote Command</h2>
-            
+
             <div className="space-y-4">
               {/* Permission Selector */}
               <div>
@@ -125,7 +126,7 @@ export default function Home() {
           {/* Response History */}
           <div className="bg-black/40 backdrop-blur-sm rounded-xl border border-purple-500/30 p-6 shadow-2xl">
             <h2 className="text-lg font-semibold mb-4 text-purple-300">Response History</h2>
-            
+
             {responses.length === 0 ? (
               <p className="text-gray-500 text-center py-8">No commands sent yet</p>
             ) : (
