@@ -25,6 +25,11 @@ wheels/
 
 # Environment variables
 .env
+
+# Remote control security
+.cred_key
+credentials.enc
+config_permissions.json
 .env.local
 
 # IDE

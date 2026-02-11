@@ -72,9 +72,49 @@ class AntiGravitySystem:
 
 
 def main():
-    """Main entry point"""
+    """Main entry point with remote control support"""
+    import argparse
+    import sys
+    
+    parser = argparse.ArgumentParser(description='AntiGravity Trading System')
+    parser.add_argument('--mode', choices=['interactive', 'remote', 'both'], 
+                       default='interactive',
+                       help='Operation mode: interactive (local only), remote (WebSocket only), both (hybrid)')
+    
+    args = parser.parse_args()
+    
+    # Initialize system
     system = AntiGravitySystem()
     
+    # Start remote control if requested
+    if args.mode in ['remote', 'both']:
+        try:
+            from remote.client import RemoteClient
+            remote = RemoteClient(system)
+            
+            if args.mode == 'remote':
+                # Remote only - blocking
+                print("\n🌐 Modo: Controle Remoto (WebSocket)")
+                print("Aguardando comandos remotos...")
+                remote.start()
+            else:
+                # Both - remote in background
+                print("\n🔀 Modo: Híbrido (Local + Remoto)")
+                remote.start_background()
+                # Continue to interactive mode
+                run_interactive(system)
+        except ImportError as e:
+            print(f"\n❌ Erro ao importar módulo remoto: {e}")
+            print("💡 Instale dependências: pip install websockets cryptography")
+            sys.exit(1)
+    else:
+        # Interactive only
+        print("\n💻 Modo: Interativo (Local)")
+        run_interactive(system)
+
+
+def run_interactive(system):
+    """Run interactive command loop"""
     print("\n" + "="*50)
     print("AntiGravity Trading System - Interactive Mode")
     print("Type 'exit' to quit")
