@@ -33,8 +33,10 @@ soundfile==0.12.1
 # GUI (from existing agent) - Optional in headless/web mode but keeping for compatibility
 customtkinter==5.2.1
 
-# AI/LLM integration
-# google-generativeai==0.3.1  # Uncomment if using Gemini API
-
 # Utilities
 requests==2.31.0
+
+# Missing Dependencies for Vision/Agent
+mss==9.0.1
+easyocr==1.7.1
+google-generativeai==0.3.2
