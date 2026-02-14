@@ -25,4 +25,5 @@ ENV PYTHONUNBUFFERED=1
 # ENV ADK_RELAY_URL=wss://your-relay-server.com (configure in Coolify)
 
 # Entrypoint
-CMD ["python", "main.py", "--mode", "remote"]
+# Entrypoint
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "80"]

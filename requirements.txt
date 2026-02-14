@@ -4,6 +4,12 @@
 pyyaml==6.0.1
 python-dotenv==1.0.0
 
+# Web Server
+fastapi==0.109.0
+uvicorn==0.27.0
+jinja2==3.1.3
+python-multipart==0.0.6
+
 # Remote control
 websockets==12.0
 cryptography==41.0.7
@@ -17,14 +23,14 @@ cryptography==41.0.7
 opencv-python==4.8.1.78
 pillow==10.1.0
 pyautogui==0.9.54
-pytesseract==0.3.10
+# pytesseract==0.3.10 # Commented out to save build time/space if not strictly needed immediately
 numpy==1.26.2
 
 # Audio capture (from existing agent)
 sounddevice==0.4.6
 soundfile==0.12.1
 
-# GUI (from existing agent)
+# GUI (from existing agent) - Optional in headless/web mode but keeping for compatibility
 customtkinter==5.2.1
 
 # AI/LLM integration
