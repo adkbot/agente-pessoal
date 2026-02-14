@@ -8,10 +8,13 @@ import asyncio
 import json
 import base64
 import os
+import cv2
+import numpy as np
 from dotenv import load_dotenv
 
 # Import AgentCore (Multimodal)
 from agent_core import AgentCore
+import vision_utils
 
 # Load Env
 load_dotenv()
@@ -22,9 +25,25 @@ app = FastAPI(title="AntiGravity Agent Portal")
 # Setup Templates
 templates = Jinja2Templates(directory="templates")
 
+# --- VISION MONKEYPATCH ---
+# Store the latest frame received from the User's Browser
+latest_frame_bgr = None
+
+def patched_capturar_tela_cv():
+    """Patched version of vision_utils.capturar_tela_cv that returns the WS frame."""
+    global latest_frame_bgr
+    if latest_frame_bgr is not None:
+        return latest_frame_bgr.copy()
+    else:
+        # Return black image if no stream yet to prevent errors
+        return np.zeros((720, 1280, 3), dtype=np.uint8)
+
+# Apply Patch
+print("🔧 Applying Monkeypatch to vision_utils.capturar_tela_cv...")
+vision_utils.capturar_tela_cv = patched_capturar_tela_cv
+# --------------------------
+
 # Global Agent Instance
-# In a real multi-user app, this would be per-session or per-user.
-# For this personal agent, a singleton is fine.
 agent: AgentCore = None
 agent_loop_task = None
 
@@ -36,7 +55,7 @@ async def startup_event():
         print("❌ GEMINI_API_KEY not found in env!")
         return
 
-    # Callback placeholders (will be updated when WS connects)
+    # Callback placeholders
     agent = AgentCore(api_key=api_key)
     print("🚀 AgentCore Initialized inside Server")
 
@@ -51,6 +70,7 @@ async def read_root(request: Request):
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    global latest_frame_bgr
     await websocket.accept()
     
     # Update Agent Callbacks to route to this WebSocket
@@ -97,16 +117,7 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.send_json({"type": "system_status", "status": "Connected to Cloud Agent ☁️"})
         
         while True:
-            # Handle messages (Text, Audio, Video)
-            # We expect a JSON header or specific format. 
-            # Simple protocol: Text is JSON, Binary is Audio or Image? 
-            # To avoid complexity, let's use receive_json for commands and receive_bytes for data, 
-            # BUT browsers usually send one or the other on a socket. 
-            # Easier: Client sends JSON for text.
-            # Client sends Binary for Audio/Video. 
-            # We need a way to distinguish Audio vs Video in binary. 
-            # Convention: First byte = type (0=Audio, 1=Video).
-            
+            # Handle messages
             message = await websocket.receive()
             
             if "text" in message:
@@ -122,20 +133,26 @@ async def websocket_endpoint(websocket: WebSocket):
             elif "bytes" in message:
                 data = message["bytes"]
                 if len(data) > 0:
-                    msg_type = data[0] # 0 for Audio, 1 for Video
+                    msg_type = data[0] 
                     payload = data[1:]
                     
-                    if msg_type == 0: # Audio (PCM 16k mono)
-                        # AgentCore expects {"data": bytes, "mime_type": "audio/pcm"}
-                        # actually, looking at agent_core.py line 209: session.send_realtime_input(audio=msg)
-                        # expecting msg to be the dict
+                    if msg_type == 0: # Audio
                         struct = {"data": payload, "mime_type": "audio/pcm"}
                         if not agent.audio_input_queue.full():
                              agent.audio_input_queue.put_nowait(struct)
                              
                     elif msg_type == 1: # Video (JPEG)
+                        # 1. Update Global Frame for Skills (OCR/VisionTools)
+                        try:
+                            nparr = np.frombuffer(payload, np.uint8)
+                            img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                            if img_np is not None:
+                                latest_frame_bgr = img_np
+                        except Exception as e:
+                            print(f"Frame decode error: {e}")
+
+                        # 2. Send to AgentCore for Gemini Vision
                         # AgentCore expects base64 string
-                        # We received raw bytes of JPEG. Encode to b64.
                         b64_img = base64.b64encode(payload).decode('utf-8')
                         if not agent.screen_input_queue.full():
                             agent.screen_input_queue.put_nowait(b64_img)
