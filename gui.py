@@ -10,6 +10,12 @@ import asyncio
 import os
 import sys
 from PIL import Image, ImageTk
+from dotenv import load_dotenv
+
+# Importar core do agente
+from agent_core import AgentCore
+from audio_capture import AudioCapture
+from screen_capture import ScreenCapture
 
 
 class AgentGUI:
@@ -33,7 +39,7 @@ class AgentGUI:
         self.root = tk.Tk()
         self.root.title("🤖 ADK AGENT — Agente Pessoal Multimodal")
         self.root.configure(bg=self.BG_DARK)
-        self.root.geometry("1200x800")
+        self.root.geometry("1100x750")
         self.root.minsize(900, 600)
 
         # Estado
@@ -41,16 +47,33 @@ class AgentGUI:
         self.mic_muted = False
         self.screen_enabled = True
         self.preview_image = None
-
-        # Callbacks (serão preenchidos pelo main.py)
-        self.on_connect = None
-        self.on_disconnect = None
-        self.on_toggle_mic = None
-        self.on_toggle_screen = None
-        self.on_send_text = None
-
+        
+        # Referências para o backend
+        self.agent_loop_thread = None
+        self.agent = None
+        self.audio = None
+        self.screen = None
+        self.stop_event = threading.Event()
+        
+        # Callbacks (definidos internamente agora)
+        self.on_connect = self.start_agent
+        self.on_disconnect = self.stop_agent
+        self.on_toggle_mic = self.toggle_mic
+        self.on_toggle_screen = self.toggle_screen
+        self.on_send_text = self.send_text_to_agent
+        
         self._setup_styles()
         self._build_ui()
+        
+        # Carregar variáveis de ambiente
+        load_dotenv()
+        
+        # Iniciar loop de preview da câmera
+        self.update_preview_loop()
+
+        self.agent_loop = None  # Reference to the async loop in the backend thread
+        
+        # AUTO-START REMOVED
 
     def _setup_styles(self):
         """Configura estilos ttk."""
@@ -299,7 +322,172 @@ class AgentGUI:
         send_btn.pack(side="right")
 
     # ═══════════════════════════════════════════════════
-    # Callbacks e ações
+    # Lógica de Integração (Backend)
+    # ═══════════════════════════════════════════════════
+
+    def start_agent(self):
+        """Inicia o agente (backend) em uma thread separada."""
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            self.add_chat_message("❌ ERRO: GEMINI_API_KEY não encontrada no .env", "system")
+            # Reseta estado visual
+            self.root.after(1000, lambda: self.set_connected(False))
+            return
+
+        self.stop_event.clear()
+        
+        def _run_async_backend():
+            # Criar loop para esta thread
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            self.agent_loop = loop  # Guardar referência do loop
+            
+            try:
+                # 1. Instanciar Agente
+                self.agent = AgentCore(
+                    api_key=api_key,
+                    on_text=lambda t: self.add_chat_message(f"🤖 {t}", "agent"),
+                    on_status=self.update_status,
+                    on_skill_log=self.add_skill_log
+                )
+
+                # 2. Instanciar Captura
+                self.audio = AudioCapture()
+                # Atualizar estado inicial do mute
+                self.audio.mic_muted = self.mic_muted
+                
+                # self.screen = ScreenCapture(fps=1.0)
+                
+                # Definir callbacks de fila
+                # O AgentCore já cria as filas: audio_input_queue, screen_input_queue, audio_output_queue
+                
+                # 3. Rodar Tasks
+                async def main_tasks():
+                    async with asyncio.TaskGroup() as tg:
+                        # Task principal do agente
+                        self.agent.running = True # EVITAR RACE CONDITION
+                        tg.create_task(self.agent.run_with_reconnect())
+                        
+                        # Tasks de I/O
+                        tg.create_task(self.audio.stream_mic(self.agent.audio_input_queue))
+                        tg.create_task(self.audio.play_audio(self.agent.audio_output_queue))
+                        # tg.create_task(self.screen.stream_frames(self.agent.screen_input_queue))
+                        
+                        # Monitorar stop_event
+                        while not self.stop_event.is_set() and self.agent.running:
+                            await asyncio.sleep(0.5)
+                        
+                        # Quando sair do loop, parar tudo
+                        self.agent.stop()
+                        self.audio.stop()
+                        # self.screen.stop()
+
+                # Sinalizar sucesso na GUI
+                self.set_connected(True)
+                
+                # Bloquear rodando tasks
+                loop.run_until_complete(main_tasks())
+            
+            except Exception as e:
+                error_msg = f"❌ Erro fatal no backend: {e}"
+                
+                # Tentar extrair erros do TaskGroup (ExceptionGroup)
+                if hasattr(e, 'exceptions'):
+                    error_msg += "\nDetalhes:"
+                    for sub_e in e.exceptions:
+                        error_msg += f"\n - {sub_e}"
+                
+                self.add_chat_message(error_msg, "system")
+                print(f"Erro backend: {e}")
+                if hasattr(e, 'exceptions'):
+                    for sub_e in e.exceptions:
+                        print(f"  - Sub-erro: {sub_e}")
+                        import traceback
+                        traceback.print_exception(type(sub_e), sub_e, sub_e.__traceback__)
+            finally:
+                loop.close()
+                self.agent_loop = None
+                self.set_connected(False)
+        
+        # Iniciar thread
+        self.agent_loop_thread = threading.Thread(target=_run_async_backend, daemon=True)
+        self.agent_loop_thread.start()
+
+    def stop_agent(self):
+        """Para o agente."""
+        # Feedback visual IMEDIATO
+        self.stop_btn.configure(state="disabled", text="Parando...")
+        self.add_chat_message("🛑 Parando sistema...", "system")
+        self.stop_event.set()
+        
+        # Sinalizar parada para o agente (não bloqueante)
+        if self.agent:
+            self.agent.stop()
+        
+        # Não chamar self.audio.stop() aqui para não travar a GUI
+        # A thread de background fará o cleanup com segurança
+        
+        # A thread vai perceber o evento, encerará as tasks
+        # E o callback finally da thread vai chamar self.set_connected(False)
+
+    def toggle_mic(self):
+        """Alterna mute do microfone."""
+        # Visual
+        # Lógica backend
+        if self.audio:
+            muted = self.audio.toggle_mic() # AudioCapture tem toggle_mic que retorna estado
+            self.mic_muted = muted
+        else:
+            self.mic_muted = not self.mic_muted
+            
+        self.update_mic_state(self.mic_muted)
+
+    def toggle_screen(self):
+        """Alterna envio de tela (pausa captura)."""
+        self.screen_enabled = not self.screen_enabled
+        if self.screen:
+            self.screen.running = self.screen_enabled # Hack para pausar loop do ScreenCapture se suportado
+            # Se ScreenCapture não tiver suporte nativo a pause em tempo real, 
+            # podemos implementar depois. Por enquanto muda só visual e flag.
+        
+        if self.screen_enabled:
+            self.screen_btn.config(text="🖥️ Tela ON", fg=self.ACCENT_GREEN)
+        else:
+            self.screen_btn.config(text="🖥️ Tela OFF", fg=self.ACCENT_RED)
+
+    def send_text_to_agent(self, text: str):
+        """Envia texto para o agente (thread-safe)."""
+        if self.agent and self.agent.running and self.agent_loop:
+            # Enviar texto de forma thread-safe usando o loop do backend
+            try:
+                asyncio.run_coroutine_threadsafe(
+                    self.agent.send_text(text), 
+                    self.agent_loop
+                )
+            except Exception as e:
+                self.add_chat_message(f"❌ Erro ao enviar texto: {e}", "system")
+        else:
+            self.add_chat_message("⚠️ Conecte o agente primeiro!", "system")
+
+    def update_preview_loop(self):
+        """Loop independente para atualizar o preview da tela na GUI."""
+        if self.is_connected and self.screen_enabled:
+            # Usar ScreenCapture estático para preview (não precisa da instância do agente)
+            try:
+                # Criar instância temporária só para um frame é ineficiente, 
+                # mas o ScreenCapture atual cria mss() a cada chamada, então ok.
+                # Melhor usar o método estático ou criar uma instância global de preview.
+                preview_capture = ScreenCapture() 
+                img = preview_capture.capture_frame_pil() # Retorna PIL Image
+                self.update_preview(img)
+            except Exception:
+                pass
+        
+        # Reagendar
+        self.root.after(200, self.update_preview_loop) # 5 FPS no preview
+
+    # ═══════════════════════════════════════════════════
+    # Callbacks da UI (Acionadores)
     # ═══════════════════════════════════════════════════
 
     def _toggle_connection(self):
@@ -313,22 +501,14 @@ class AgentGUI:
                 self.on_disconnect()
 
     def _toggle_mic(self):
-        """Alterna mute do microfone."""
         if self.on_toggle_mic:
             self.on_toggle_mic()
 
     def _toggle_screen(self):
-        """Alterna captura de tela."""
-        self.screen_enabled = not self.screen_enabled
-        if self.screen_enabled:
-            self.screen_btn.config(text="🖥️ Tela ON", fg=self.ACCENT_GREEN)
-        else:
-            self.screen_btn.config(text="🖥️ Tela OFF", fg=self.ACCENT_RED)
         if self.on_toggle_screen:
-            self.on_toggle_screen(self.screen_enabled)
+            self.on_toggle_screen()
 
     def _send_text(self, event):
-        """Envia texto digitado."""
         text = self.text_input.get().strip()
         placeholder = "Digite uma mensagem ou fale pelo microfone..."
         if text and text != placeholder:
@@ -349,7 +529,7 @@ class AgentGUI:
             self.text_input.config(fg=self.TEXT_SECONDARY)
 
     # ═══════════════════════════════════════════════════
-    # Métodos públicos (thread-safe)
+    # Métodos públicos (thread-safe) para UI
     # ═══════════════════════════════════════════════════
 
     def set_connected(self, connected: bool):
@@ -421,8 +601,14 @@ class AgentGUI:
 
     def destroy(self):
         """Fecha a janela."""
+        self.stop_agent()
         try:
             self.root.quit()
             self.root.destroy()
         except Exception:
             pass
+
+
+if __name__ == "__main__":
+    app = AgentGUI()
+    app.run()

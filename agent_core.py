@@ -7,10 +7,27 @@ import asyncio
 import base64
 import json
 import traceback
+import sys
+import os
+import importlib.util
+
+# CRITICAL: Force import of skills.py and memory.py files (not folders!)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+def load_module_from_file(module_name, file_path):
+    """Force load a module from a specific file path"""
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+# Load skills.py and memory.py explicitly
+skills_module = load_module_from_file("skills_module", os.path.join(current_dir, "skills.py"))
+memory_module = load_module_from_file("memory_module", os.path.join(current_dir, "memory.py"))
+
 from google import genai
 from google.genai import types
-from skills import TOOL_DECLARATIONS, executar_skill
-from memory import salvar_mensagem, obter_resumo_contexto
 
 
 class AgentCore:
@@ -38,7 +55,7 @@ class AgentCore:
         self.model = "gemini-2.5-flash-native-audio-preview-12-2025"
 
         # Tools
-        self._tool_declarations = TOOL_DECLARATIONS
+        self._tool_declarations = skills_module.TOOL_DECLARATIONS
 
         # System instruction base
         self._system_base = (
@@ -79,7 +96,7 @@ class AgentCore:
 
     def _build_system_instruction(self):
         """Constrói system instruction com contexto da memória."""
-        contexto = obter_resumo_contexto()
+        contexto = memory_module.obter_resumo_contexto()
         return self._system_base + f"\n\n═══ MEMÓRIA DO AGENTE ═══\n{contexto}"
 
     def _build_config(self):
@@ -233,10 +250,17 @@ class AgentCore:
                         if response.server_content and response.server_content.model_turn:
                             for part in response.server_content.model_turn.parts:
                                 if part.inline_data and isinstance(part.inline_data.data, bytes):
+                                    msg = f"[DEBUG] Recebido áudio do Gemini: {len(part.inline_data.data)} bytes"
+                                    print(msg)
+                                    with open("audio_debug.log", "a", encoding='utf-8') as f:
+                                        f.write(msg + "\n")
                                     self.audio_output_queue.put_nowait(part.inline_data.data)
+                                    q_size = self.audio_output_queue.qsize()
+                                    with open("audio_debug.log", "a", encoding='utf-8') as f:
+                                        f.write(f"[DEBUG] Queue size after put: {q_size}\n")
                                 if part.text:
                                     self.on_text(part.text)
-                                    salvar_mensagem("agent", part.text)
+                                    memory_module.salvar_mensagem("agent", part.text)
 
                         # Function calls
                         if response.tool_call:
@@ -265,7 +289,7 @@ class AgentCore:
             self.on_skill_log(f"🔧 {nome}({json.dumps(params, ensure_ascii=False)[:200]})")
 
             try:
-                resultado = await asyncio.to_thread(executar_skill, nome, params)
+                resultado = await asyncio.to_thread(skills_module.executar_skill, nome, params)
                 self.on_skill_log(f"✅ {resultado[:300]}")
             except Exception as e:
                 resultado = json.dumps({"sucesso": False, "mensagem": str(e)})
@@ -296,7 +320,7 @@ class AgentCore:
                         parts=[types.Part(text=text)]
                     )
                 )
-                salvar_mensagem("user", text)
+                memory_module.salvar_mensagem("user", text)
             except Exception as e:
                 self.on_text(f"⚠️ Sessão expirou. Reconectando...")
                 print(f"[AgentCore] Erro send_text: {e}")
