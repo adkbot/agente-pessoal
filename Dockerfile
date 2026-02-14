@@ -6,7 +6,7 @@ WORKDIR /app
 
 # System Dependencies (OpenCV, Audio)
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     portaudio19-dev \
     python3-pyaudio \
