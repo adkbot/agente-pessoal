@@ -1,231 +1,575 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ system_name }} - Portal</title>
+    <title>AntiGravity Agent - Premium</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-color: #3b82f6;
-            --success-color: #22c55e;
-            --error-color: #ef4444;
+            --bg-dark: #09090b;
+            --bg-card: #18181b;
+            --terminal-bg: #0c0c0e;
+            --accent-primary: #3b82f6;
+            /* Blue */
+            --accent-secondary: #8b5cf6;
+            /* Purple */
+            --accent-success: #22c55e;
+            --accent-danger: #ef4444;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --border: #27272a;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
             margin: 0;
+            height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
             align-items: center;
-            min-height: 100vh;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
-        .container {
-            width: 100%;
-            max-width: 800px;
-            padding: 2rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin: 0;
-            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: -0.05em;
         }
 
-        .status-badge {
-            display: inline-block;
-            margin-top: 0.5rem;
+        .status-pill {
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
-            font-size: 0.875rem;
-            background-color: rgba(34, 197, 94, 0.1);
-            color: var(--success-color);
-            font-weight: 500;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #27272a;
+            color: #71717a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+        }
+
+        .status-pill.connected {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--accent-success);
+        }
+
+        .status-pill.disconnected {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-danger);
+        }
+
+        /* Main Layout */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            grid-template-rows: 1fr;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        aside {
+            background-color: var(--bg-card);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .control-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .control-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #27272a;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-danger);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .btn.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--accent-success);
+            border-color: rgba(34, 197, 94, 0.2);
+        }
+
+        /* Video Preview */
+        #video-preview {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Content Area (Chat/Terminal) */
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            gap: 1rem;
+            background: #050505;
         }
 
         .terminal {
-            background-color: #020617;
-            border-radius: 0.5rem;
+            flex: 1;
+            background: var(--terminal-bg);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
             padding: 1rem;
-            height: 300px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
             overflow-y: auto;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.875rem;
-            color: #e2e8f0;
-            margin-bottom: 1rem;
-            border: 1px solid #334155;
+            color: #d4d4d8;
         }
 
         .log-entry {
             margin-bottom: 0.5rem;
-            border-bottom: 1px solid #1e293b;
-            padding-bottom: 0.25rem;
-        }
-        
-        .log-time {
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            margin-right: 0.5rem;
+            line-height: 1.5;
         }
 
-        .input-group {
+        .log-time {
+            color: #52525b;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            user-select: none;
+        }
+
+        .log-agent {
+            color: var(--accent-success);
+        }
+
+        .log-user {
+            color: var(--accent-primary);
+        }
+
+        .log-system {
+            color: var(--accent-secondary);
+        }
+
+        .log-error {
+            color: var(--accent-danger);
+        }
+
+        /* Input Area */
+        .input-area {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
         }
 
         input[type="text"] {
             flex: 1;
-            background-color: #334155;
-            border: 1px solid #475569;
+            background: transparent;
+            border: none;
             color: white;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s;
         }
-
-        input[type="text"]:focus {
-            border-color: var(--accent-color);
-        }
-
-        button {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: #2563eb;
-        }
-        
-        button:disabled {
-            background-color: #475569;
-            cursor: not-allowed;
-        }
-
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>{{ system_name }}</h1>
-            <span id="connection-status" class="status-badge">Connecting...</span>
-        </div>
 
-        <div class="card">
+    <header>
+        <div class="logo">AntiGravity Agent</div>
+        <div id="status-pill" class="status-pill disconnected">
+            <span class="status-dot"></span>
+            <span id="status-text">Disconnected</span>
+        </div>
+    </header>
+
+    <main>
+        <aside>
+            <div class="control-card">
+                <div class="control-title">Media Controls</div>
+                <video id="video-preview" autoplay muted playsinline></video>
+                <button id="btn-share-screen" class="btn">
+                    <span>🖥️</span> Share Screen (Vision)
+                </button>
+                <button id="btn-mic" class="btn">
+                    <span>🎤</span> Microphone
+                </button>
+            </div>
+
+            <div class="control-card">
+                <div class="control-title">System</div>
+                <button id="btn-connect" class="btn btn-primary">Reconnect</button>
+            </div>
+        </aside>
+
+        <div class="content-area">
             <div id="terminal" class="terminal">
-                <!-- Logs will appear here -->
-                <div class="log-entry"><span class="log-time">System</span> Initializing Web Interface...</div>
+                <div class="log-entry"><span class="log-time">System</span> Welcome to AntiGravity Web Portal v2.0</div>
+                <div class="log-entry"><span class="log-time">System</span> Ready to connect to Cloud Agent...</div>
             </div>
 
-            <div class="input-group">
-                <input type="text" id="command-input" placeholder="Enter command (e.g., 'status', 'analyze market')..." autofocus>
-                <button id="send-btn">Send</button>
+            <div class="input-area">
+                <input type="text" id="cmd-input" placeholder="Type a message or command..." autofocus>
+                <button id="btn-send" class="btn btn-primary" style="width: auto; margin:0;">Send</button>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
+        // Configuration
+        const WS_PROTOCOL = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const WS_URL = `${WS_PROTOCOL}//${window.location.host}/ws`;
+
+        // Elements
         const terminal = document.getElementById('terminal');
-        const input = document.getElementById('command-input');
-        const sendBtn = document.getElementById('send-btn');
-        const statusBadge = document.getElementById('connection-status');
-        
-        function log(message, source="System") {
-            const entry = document.createElement('div');
-            entry.className = 'log-entry';
+        const input = document.getElementById('cmd-input');
+        const btnSend = document.getElementById('btn-send');
+        const statusPill = document.getElementById('status-pill');
+        const statusText = document.getElementById('status-text');
+        const btnConnect = document.getElementById('btn-connect');
+        const btnMic = document.getElementById('btn-mic');
+        const btnScreen = document.getElementById('btn-share-screen');
+        const videoPreview = document.getElementById('video-preview');
+
+        // State
+        let ws = null;
+        let audioContext = null;
+        let mediaStream = null; // Mic stream
+        let screenStream = null; // Screen stream
+        let scriptProcessor = null;
+        let isMicActive = false;
+        let isScreenActive = false;
+        let screenInterval = null;
+
+        // Helper: Log to terminal
+        function log(msg, type = 'system') {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
             const time = new Date().toLocaleTimeString();
-            entry.innerHTML = `<span class="log-time">[${time}] ${source}</span> ${message}`;
-            terminal.appendChild(entry);
+            div.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-${type}">${msg}</span>`;
+            terminal.appendChild(div);
             terminal.scrollTop = terminal.scrollHeight;
         }
 
-        // WebSocket Connection
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.host}/ws`;
-        let ws;
-
+        // Connect WebSocket
         function connect() {
-            ws = new WebSocket(wsUrl);
+            if (ws) ws.close();
+            ws = new WebSocket(WS_URL);
+            ws.binaryType = 'arraybuffer';
 
             ws.onopen = () => {
-                statusBadge.textContent = "Connected";
-                statusBadge.style.backgroundColor = "rgba(34, 197, 94, 0.1)";
-                statusBadge.style.color = "#22c55e";
-                log("Connected to Agent Server.");
-                sendBtn.disabled = false;
-            };
+                statusPill.className = 'status-pill connected';
+                statusText.textContent = 'Connected';
+                log('WebSocket Connected', 'system');
 
-            ws.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data);
-                    if (data.type === 'system_status') {
-                        log(data.message, "System");
-                    } else if (data.type === 'command_response') {
-                         log(`Response: ${JSON.stringify(data)}`, "Agent");
-                    } else {
-                        log(event.data, "Agent");
-                    }
-                } catch (e) {
-                    log(event.data, "Agent");
+                // Init Audio Context for Playback on user gesture if needed
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
                 }
             };
 
             ws.onclose = () => {
-                statusBadge.textContent = "Disconnected - Retrying...";
-                statusBadge.style.backgroundColor = "rgba(239, 68, 68, 0.1)";
-                statusBadge.style.color = "#ef4444";
-                log("Connection lost. Retrying in 5s...", "System");
-                sendBtn.disabled = true;
-                setTimeout(connect, 5000);
+                statusPill.className = 'status-pill disconnected';
+                statusText.textContent = 'Disconnected';
+                log('WebSocket Disconnected', 'error');
+                stopMic();
+                stopScreen();
             };
 
-            ws.onerror = (error) => {
-                console.error("WebSocket Error:", error);
+            ws.onmessage = async (event) => {
+                const data = event.data;
+
+                if (typeof data === 'string') {
+                    // Text Message (JSON)
+                    try {
+                        const json = JSON.parse(data);
+                        if (json.type === 'agent_message') {
+                            log(json.text, 'agent');
+                        } else if (json.type === 'system_status') {
+                            log(`STATUS: ${json.status}`, 'system');
+                        } else if (json.type === 'skill_log') {
+                            // Optional: Log skills nicely
+                            console.log("Skill:", json.log);
+                        }
+                    } catch (e) {
+                        console.error("Parse Error", e);
+                    }
+                } else if (data instanceof ArrayBuffer) {
+                    // Binary Message (Audio Output)
+                    playAudioChunk(data);
+                }
             };
         }
 
-        connect();
+        // --- Audio Playback ---
+        function playAudioChunk(arrayBuffer) {
+            if (!audioContext) return;
 
-        function sendCommand() {
-            const command = input.value.trim();
-            if (command && ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(command);
-                log(command, "You");
-                input.value = '';
+            // Check if context is suspended (browser policy)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            // Assume 24kHz PCM 16-bit mono (from Gemini)
+            // We need to convert Int16 ArrayBuffer to Float32
+            const int16Array = new Int16Array(arrayBuffer);
+            const float32Array = new Float32Array(int16Array.length);
+
+            for (let i = 0; i < int16Array.length; i++) {
+                float32Array[i] = int16Array[i] / 32768.0;
+            }
+
+            const buffer = audioContext.createBuffer(1, float32Array.length, 24000);
+            buffer.getChannelData(0).set(float32Array);
+
+            const source = audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(audioContext.destination);
+            source.start();
+        }
+
+        // --- Audio Input (Mic) ---
+        async function toggleMic() {
+            if (isMicActive) {
+                stopMic();
+            } else {
+                await startMic();
             }
         }
 
-        sendBtn.addEventListener('click', sendCommand);
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendCommand();
-        });
+        async function startMic() {
+            try {
+                // Need audio context at 16k for receiving? No, we resample or capture at 16k?
+                // Gemini wants 16kHz. 
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaStream = stream;
+
+                const context = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+                const source = context.createMediaStreamSource(stream);
+
+                // Use ScriptProcessor for raw PCM access 
+                scriptProcessor = context.createScriptProcessor(1024, 1, 1); // Buffer size 1024 matches Python
+
+                scriptProcessor.onaudioprocess = (e) => {
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        const inputData = e.inputBuffer.getChannelData(0);
+                        // Convert Float32 to Int16
+                        const pcmData = new Int16Array(inputData.length);
+                        for (let i = 0; i < inputData.length; i++) {
+                            let s = Math.max(-1, Math.min(1, inputData[i]));
+                            pcmData[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                        }
+
+                        // Prefix with 0 (Audio Type)
+                        const packet = new Int8Array(pcmData.buffer.byteLength + 1);
+                        packet[0] = 0; // Type 0 = Audio
+                        packet.set(new Int8Array(pcmData.buffer), 1);
+
+                        ws.send(packet);
+                    }
+                };
+
+                source.connect(scriptProcessor);
+                scriptProcessor.connect(context.destination); // Needed for Chrome to activate
+
+                isMicActive = true;
+                btnMic.classList.add('active');
+                log('Microphone Enabled', 'system');
+            } catch (e) {
+                log(`Mic Error: ${e.message}`, 'error');
+            }
+        }
+
+        function stopMic() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            if (scriptProcessor) {
+                scriptProcessor.disconnect();
+                scriptProcessor = null;
+            }
+            isMicActive = false;
+            btnMic.classList.remove('active');
+            log('Microphone Disabled', 'system');
+        }
+
+        // --- Vision (Screen Share) ---
+        async function toggleScreen() {
+            if (isScreenActive) {
+                stopScreen();
+            } else {
+                await startScreen();
+            }
+        }
+
+        async function startScreen() {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { cursor: "always" },
+                    audio: false
+                });
+                screenStream = stream;
+                videoPreview.srcObject = stream;
+
+                // Canvas for frame extraction
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                // Frame sender loop (2 FPS is enough for Analysis, 5 for smooth)
+                screenInterval = setInterval(() => {
+                    if (ws && ws.readyState === WebSocket.OPEN && stream.active) {
+                        const video = videoPreview;
+                        if (video.videoWidth === 0) return;
+
+                        // Downscale for performance logic?
+                        canvas.width = 1280; // Fixed large width
+                        const scale = 1280 / video.videoWidth;
+                        canvas.height = video.videoHeight * scale;
+
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                        // Convert to JPEG blob
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                blob.arrayBuffer().then(buffer => {
+                                    // Prefix with 1 (Video Type)
+                                    const packet = new Uint8Array(buffer.byteLength + 1);
+                                    packet[0] = 1; // Type 1 = Video
+                                    packet.set(new Uint8Array(buffer), 1);
+                                    ws.send(packet);
+                                });
+                            }
+                        }, 'image/jpeg', 0.6); // 60% quality
+                    }
+                }, 500); // 2 FPS
+
+                // Handle stop from browser UI
+                stream.getVideoTracks()[0].onended = stopScreen;
+
+                isScreenActive = true;
+                btnScreen.classList.add('active');
+                log('Screen Share Enabled (Vision)', 'system');
+            } catch (e) {
+                log(`Screen Error: ${e.message}`, 'error');
+            }
+        }
+
+        function stopScreen() {
+            if (screenStream) {
+                screenStream.getTracks().forEach(track => track.stop());
+                screenStream = null;
+                videoPreview.srcObject = null;
+            }
+            if (screenInterval) {
+                clearInterval(screenInterval);
+                screenInterval = null;
+            }
+            isScreenActive = false;
+            btnScreen.classList.remove('active');
+            log('Screen Share Disabled', 'system');
+        }
+
+        // --- UI Listeners ---
+        btnConnect.onclick = connect;
+        btnMic.onclick = toggleMic;
+        btnScreen.onclick = toggleScreen;
+
+        btnSend.onclick = () => {
+            const text = input.value;
+            if (text && ws) {
+                ws.send(JSON.stringify({ type: 'command', text: text }));
+                log(`You: ${text}`, 'user');
+                input.value = '';
+            }
+        };
+
+        input.onkeypress = (e) => {
+            if (e.key === 'Enter') btnSend.click();
+        };
+
+        // Auto-connect on load
+        connect();
+
     </script>
 </body>
+
 </html>
