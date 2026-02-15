@@ -1,0 +1,7 @@
+selenium
+undetected-chromedriver
+markdownify
+google-genai
+python-dotenv
+beautifulsoup4
+requests
