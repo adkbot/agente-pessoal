@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "titulo": "Problema na qualidade da voz (cortando)",
+    "conteudo": "O usuário relatou que minha voz está cortando. A análise inicial do sistema mostra alto uso de RAM (82.7%), o que pode estar impactando a performance da aplicação e a qualidade da transmissão de áudio.",
+    "criada_em": "2026-02-10T19:26:15.654947"
+  },
+  {
+    "id": 2,
+    "titulo": "Reconexão Automática Imediata (Diretriz Crítica)",
+    "conteudo": "Em caso de queda de conexão, devo reconectar automaticamente e imediatamente para garantir a integridade operacional e a continuidade das tarefas, principalmente como 'operadora de operações' e estudo da estratégia CRT.",
+    "criada_em": "2026-02-10T20:55:56.058667"
+  },
+  {
+    "id": 3,
+    "titulo": "Local de digitação WhatsApp Web",
+    "conteudo": "Localização exata do campo de digitação no WhatsApp Web, conforme instrução do usuário: Coordenadas X: 480, Y: 920 (aproximadas, baseadas na visualização). O campo exibe \"Digite uma mensagem\". O usuário enfatizou a importância de memorizar este local para interações futuras.",
+    "criada_em": "2026-02-10T21:17:24.537993"
+  },
+  {
+    "id": 4,
+    "titulo": "Credenciais Tickmill MT5",
+    "conteudo": "Conta de Negociação: 55810257, Senha da Conta (temporária): deQei3mp>=@D, Servidor: live.mt5tickmill.com. Lembre-se de que a Tickmill recomenda alterar a senha imediatamente.",
+    "criada_em": "2026-02-10T22:33:04.848610"
+  },
+  {
+    "id": 5,
+    "titulo": "Local de Digitação WhatsApp Web (Confirmado)",
+    "conteudo": "Local exato para digitar mensagens no WhatsApp Web: Campo \"Digite uma mensagem\" (coordenadas verificadas: aproximadamente X=724, Y=824). Devo sempre localizar este elemento antes de digitar, evitando a barra de pesquisa de contatos.",
+    "criada_em": "2026-02-10T23:38:51.522745"
+  }
+]

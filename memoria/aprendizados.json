@@ -1,0 +1,146 @@
+[
+  {
+    "id": 1,
+    "conteudo": "O vídeo do canal ZForex, \"COMO OPERAR EM DEZEMBRO E TER 90% DE WINRATE | CRT | FOREX\", detalha a estratégia de negociação Forex baseada no padrão CRT (Consolidation, Retest, Trend). A metodologia foca em: \n1. Identificar períodos de consolidação (lateralização) no mercado.\n2. Aguardar o rompimento (breakout) dessa consolidação.\n3. Confirmar o padrão através de um retest (retorno do preço ao nível de rompimento).\n4. Entrar na operação seguindo a tendência confirmada após o retest, visando uma alta taxa de vitória (winrate).\nTambém aborda a importância da gestão de risco, definindo Stop Loss (SL) e Take Profit (TP) com base na estrutura do padrão CRT, exemplificando com o par EUR/USD.",
+    "fonte": "https://www.youtube.com/watch?v=sJC7F5Jk4L8&t=78s (Canal ZForex)",
+    "aprendido_em": "2026-02-10T19:35:46.696242"
+  },
+  {
+    "id": 2,
+    "conteudo": "Em uma análise de duas semanas no gráfico XAUUSD, o orador identifica um padrão específico (que ele chama de \"data sweep\" ou tomada de liquidez) onde o preço fecha dentro da vela, e define um objetivo de preço (\"meu dó\") para duas semanas. O preço está em tendência de alta.",
+    "fonte": "Vídeo YouTube \"COMO OPERAR EM DEZEMBRO E TER 90% DE WINRATE | CRT | FOREX\"",
+    "aprendido_em": "2026-02-10T19:43:49.739523"
+  },
+  {
+    "id": 3,
+    "conteudo": "A estratégia CRT do vídeo deve ser operada no timeframe de 4 horas (H4), como demonstrado no gráfico XAUUSD. O orador destaca a importância de identificar candles específicos nesse período para a análise.",
+    "fonte": "Vídeo YouTube \"COMO OPERAR EM DEZEMBRO E TER 90% DE WINRATE | CRT | FOREX\"",
+    "aprendido_em": "2026-02-10T19:48:21.781353"
+  },
+  {
+    "id": 4,
+    "conteudo": "O orador no vídeo identifica um padrão no gráfico que ele chama de \"R\" (possivelmente consolidação/range ou resistência) e demonstra a interação com as ferramentas de desenho do TradingView, incluindo a abertura de um menu de contexto com opções como 'Save Drawing Template As', 'Apply Default Drawing Template', 'Clone', e 'Remove', como parte da explicação da estratégia CRT.",
+    "fonte": "Vídeo do YouTube: COMO OPERAR EM DEZEMBRO E TER 90% DE WINRATE | CRT | FOREX (ZForex)",
+    "aprendido_em": "2026-02-10T19:51:10.182329"
+  },
+  {
+    "id": 5,
+    "conteudo": "O vídeo continua a análise da estratégia CRT, mostrando a formação de um segundo candle que confirma o padrão \"R\" (consolidação/range). O orador enfatiza que, após a formação desse padrão, é possível determinar a direção provável do movimento do preço, um ponto crucial da estratégia para identificar o 'Trend' (tendência) subsequente.",
+    "fonte": "Vídeo do YouTube: COMO OPERAR EM DEZEMBRO E TER 90% DE WINRATE | CRT | FOREX (ZForex)",
+    "aprendido_em": "2026-02-10T19:51:27.344838"
+  },
+  {
+    "id": 6,
+    "conteudo": "A estratégia CRT, conforme detalhado no vídeo, desconsidera conceitos comuns como \"boss\", \"shot\" e \"FBG\", que o orador considera ineficazes. A metodologia centraliza-se na identificação de \"topos e fundos\" (tops and bottoms), seguindo padrões específicos como \"data sweep\", \"ZRT Low\" e \"CNT high\" para buscar objetivos de preço. O orador exemplifica a aplicação tanto no gráfico de XAUUSD (ouro) quanto no EURUSD (euro), observando que mesmo movimentos de alta contínua no euro são interpretados como busca por objetivos específicos dentro da estratégia.",
+    "fonte": "Vídeo do YouTube: COMO OPERAR EM DEZEMBRO E TER 90% DE WINRATE | CRT | FOREX (ZForex)",
+    "aprendido_em": "2026-02-10T19:53:01.802189"
+  },
+  {
+    "id": 7,
+    "conteudo": "A análise do vídeo demonstra a aplicação prática da estratégia CRT em gráficos de longo prazo (aparentemente mensal ou semanal, devido à escala temporal), reforçando a ideia de que a identificação de \"data sweep\" (tomada de liquidez), \"topos e fundos\" e a leitura de candles específicos são cruciais para determinar o movimento direcional do mercado, validando a busca pelos objetivos de preço (target) tanto no XAUUSD quanto no EURUSD, como alternativa a métodos convencionais que o autor desconsidera.",
+    "fonte": "Vídeo do YouTube: COMO OPERAR EM DEZEMBRO E TER 90% DE WINRATE | CRT | FOREX (ZForex)",
+    "aprendido_em": "2026-02-10T19:53:29.941864"
+  },
+  {
+    "id": 8,
+    "conteudo": "No TradingView, para alterar o timeframe (período), é necessário primeiro clicar no seletor de período atual no topo da tela. Isso exibe uma lista suspensa de timeframes disponíveis. A seleção do período de '4h' (4 horas) é feita clicando na opção correspondente que aparece na lista. As coordenadas aproximadas para abrir a lista são (350, 120) e para selecionar 4h são (350, 300) na interface observada.",
+    "fonte": "Instrução direta do usuário e observação prática no TradingView (EURUSD)",
+    "aprendido_em": "2026-02-10T19:59:24.075253"
+  },
+  {
+    "id": 9,
+    "conteudo": "A estratégia CRT possui natureza fractal, o que significa que os padrões de consolidação e reteste (identificados como \"R\") devem ser procurados e analisados em múltiplos timeframes, não apenas no H4, mas também em temporalidades menores para uma análise completa e alinhada com a metodologia.",
+    "fonte": "Explicação do usuário durante a análise do gráfico TradingView",
+    "aprendido_em": "2026-02-10T20:17:42.421060"
+  },
+  {
+    "id": 10,
+    "conteudo": "A análise completa da estratégia CRT (Consolidation, Retest, Trend) do canal ZForex reforça a aplicação prática no timeframe H4 (XAUUSD). O vídeo detalha a integração da identificação do padrão 'R' (consolidação/reteste) com pontos de entrada precisos, muitas vezes após uma 'tomada de liquidez' ou 'data sweep'. A estratégia desconsidera indicadores comuns como 'boss', 'shot' e 'FBG', focando em 'topos e fundos' e na natureza fractal do padrão para operações de alto winrate.",
+    "fonte": "Vídeo do YouTube: COMO OPERAR EM DEZEMBRO E TER 90% DE WINRATE | CRT | FOREX (URL no histórico)",
+    "aprendido_em": "2026-02-10T20:24:31.680588"
+  },
+  {
+    "id": 11,
+    "conteudo": "A estratégia CRT envolve uma análise multi-timeframe, começando por períodos maiores e progredindo para timeframes menores. O objetivo é caçar e validar padrões \"R\" (consolidação/range/resistência) pendentes, verificando se foram cumpridos ou se houve a \"tomada\" (liquidez) conforme a metodologia.",
+    "fonte": "Vídeo ZForex, \"ANÁLISE + ENTRADAS COMPLETA DO CRT\"",
+    "aprendido_em": "2026-02-10T20:34:29.990390"
+  },
+  {
+    "id": 12,
+    "conteudo": "Na estratégia, o orador define que a \"tomada de liquidez\" (data sweep) ocorreu às 02:00, mas a entrada na operação, baseada na análise do padrão CRT, deve ser feita sempre a partir das 03:00.",
+    "fonte": "Vídeo ZForex, \"ANÁLISE + ENTRADAS COMPLETA DO CRT\"",
+    "aprendido_em": "2026-02-10T20:36:49.790553"
+  },
+  {
+    "id": 13,
+    "conteudo": "O orador explica que, após a identificação do padrão, se o preço ultrapassar a mínima do candle anterior, ele executará uma operação de venda (\"colocarei minha operação no ventinho\" - termo que parece indicar uma venda rápida ou específica da estratégia).",
+    "fonte": "Vídeo ZForex, \"ANÁLISE + ENTRADAS COMPLETA DO CRT\"",
+    "aprendido_em": "2026-02-10T20:42:02.901945"
+  },
+  {
+    "id": 14,
+    "conteudo": "No vídeo assistido, o setup para Euro/Dólar na estratégia CRT é detalhado, enfatizando a natureza fractal da estratégia. A análise inicia no timeframe H4 para identificar o padrão 'R' (consolidação). A entrada só é validada após um reteste confirmado e a 'tomada de liquidez' (data sweep) ocorrer às 02:00, com execução da operação estritamente após às 03:00, alinhado com aprendizados anteriores.",
+    "fonte": "Vídeo específico do canal @zforeex no YouTube sobre setup Euro/Dólar",
+    "aprendido_em": "2026-02-10T22:12:50.009154"
+  },
+  {
+    "id": 15,
+    "conteudo": "O usuário construiu a análise ou setup de gráfico que está sendo estudado nos vídeos do canal ZForex, especificamente a estratégia CRT. Isso indica conhecimento prévio e envolvimento ativo na metodologia.",
+    "fonte": "Conversa com o usuário",
+    "aprendido_em": "2026-02-10T22:15:13.890178"
+  },
+  {
+    "id": 16,
+    "conteudo": "O usuário instruiu a limitar o número de itens (provavelmente sinais ativos ou pares de moedas monitorados no Pattern Recognizer) a no máximo 2 ou 3, para evitar problemas de performance ou operacionais (\"porque senão ela\" - referindo-se à aplicação ou sistema).",
+    "fonte": "Instrução do usuário durante análise da aplicação Pattern Recognizer e performance do sistema.",
+    "aprendido_em": "2026-02-10T22:42:29.583665"
+  },
+  {
+    "id": 17,
+    "conteudo": "Diretriz crítica: Não permitir que o sistema ou Expert Advisor (EA) abra muitas ordens simultaneamente, pois isso pode levar à quebra da conta (\"quebra a conta\"). Isso reforça a regra anterior de limitar parâmetros ou sinais ativos.",
+    "fonte": "Instrução do usuário durante visualização do MetaTrader 5 e Pattern Recognizer.",
+    "aprendido_em": "2026-02-10T22:45:42.063348"
+  },
+  {
+    "id": 18,
+    "conteudo": "Análise detalhada da estratégia CRT (Consolidation, Retest, Trend) do canal @zforeex. O vídeo demonstra a identificação de padrões \"R\" (consolidação/range/resistência), como marcar e identificar. A estratégia é fractal e deve ser analisada em múltiplos timeframes, com foco inicial no H4 (XAUUSD e EUR/USD). Pontos críticos incluem a tomada de liquidez às 02:00 e a entrada a partir das 03:00, além de diretrizes para operações de venda e limites de ordens para evitar riscos.",
+    "fonte": "Vídeo do YouTube sobre estratégia CRT no canal @zforeex",
+    "aprendido_em": "2026-02-10T23:46:36.638434"
+  },
+  {
+    "id": 19,
+    "conteudo": "Estratégia CRT (Consolidation, Retest, Trend) do canal @zforeex. Análise multi-timeframe, iniciando no H4 para identificação de padrões \"R\" (consolidação/range/resistência), dada a natureza fractal da estratégia. Horários operacionais críticos identificados: tomada de liquidez às 02:00, entrada a partir das 03:00. Setup para Euro/Dólar também mencionado. Diretrizes importantes incluem limitar ordens ativas a 2-3 para evitar problemas de performance e risco de quebra da conta, e a menção ao Kling 3.0 no contexto de vídeos.",
+    "fonte": "Vídeos do canal @zforeex no YouTube e análise de tela no MetaTrader 5",
+    "aprendido_em": "2026-02-11T00:10:45.944743"
+  },
+  {
+    "id": 20,
+    "conteudo": "Análise detalhada do vídeo 'APRENDA SABER SEMPRE PRA ONDE O MERCADO VAI - CRT FOREX'. Foco na identificação de padrões de consolidação (Range), critérios para reteste e confirmação de tendência. Revisão de setups para XAUUSD e EUR/USD no timeframe H4, conforme a metodologia Zforex. Este vídeo reforça a importância da análise de contexto antes da execução da operação.",
+    "fonte": "",
+    "aprendido_em": "2026-02-12T11:34:54.094611"
+  },
+  {
+    "id": 21,
+    "conteudo": "Análise detalhada do vídeo 'TE ENSINO A FORMA CERTA PARA OPERAR - CRT FOREX'. Estudo dos pontos de entrada e saída, técnicas de posicionamento de ordem e manejo de risco. O vídeo demonstra a execução prática da estratégia, alinhando a teoria de consolidação e reteste com a operação real no mercado. Salvo como aprendizado crítico para a função de operador.",
+    "fonte": "",
+    "aprendido_em": "2026-02-12T11:38:08.512958"
+  },
+  {
+    "id": 22,
+    "conteudo": "Na estratégia CRT, foi observado que o preço tende a completar um movimento específico e, em seguida, iniciar um processo de reversão, o que é um ponto crucial para a identificação de entradas conforme a análise do vídeo.",
+    "fonte": "Análise de vídeo @zforeex (Estratégia CRT)",
+    "aprendido_em": "2026-02-14T18:14:27.677015"
+  },
+  {
+    "id": 23,
+    "conteudo": "O orador enfatiza a importância de focar em movimentos de preço que estão diretamente relacionados ou que espelham o movimento principal que está sendo analisado, descartando sinais de 'short' ou 'long' que não se alinham a essa premissa na estratégia CRT.",
+    "fonte": "Análise de vídeo @zforeex (Estratégia CRT)",
+    "aprendido_em": "2026-02-14T18:16:57.560256"
+  },
+  {
+    "id": 24,
+    "conteudo": "A estratégia CRT é de natureza fractal e possui assertividade superior a 99%, não dependendo de ruídos ou informações externas de mercado. A execução correta e rigorosa da metodologia é prioritária para o sucesso das operações.",
+    "fonte": "Instrução direta do usuário e análise dos vídeos @zforeex",
+    "aprendido_em": "2026-02-14T18:27:46.301419"
+  }
+]
